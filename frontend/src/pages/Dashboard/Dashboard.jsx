@@ -9,6 +9,7 @@ import {
   Mail,
   MoreHorizontal,
   UsersRound,
+  Filter,
 } from "lucide-react";
 
 import {
@@ -19,6 +20,7 @@ import {
 } from "recharts";
 
 import "./Dashboard.css";
+import React, { useState } from "react";
 
 const statCards = [
   {
@@ -170,20 +172,14 @@ function DistributionItem({ item }) {
           <div>
             <strong>{item.name}</strong>
 
-            <span>
-              {item.description}
-            </span>
+            <span>{item.description}</span>
           </div>
         </div>
 
         <div className="distribution-value">
-          <strong>
-            {item.value}
-          </strong>
+          <strong>{item.value}</strong>
 
-          <span>
-            {item.percentage}%
-          </span>
+          <span>{item.percentage}%</span>
         </div>
       </div>
 
@@ -200,6 +196,13 @@ function DistributionItem({ item }) {
 }
 
 function Dashboard() {
+  const [filterOpen, setFilterOpen] = useState(false);
+
+  // Selected squad.
+  // "All" means View All is active.
+  const [selectedSquad, setSelectedSquad] =
+    useState("All");
+
   const totalStudents = distribution.reduce(
     (total, item) => total + item.value,
     0
@@ -209,12 +212,29 @@ function Dashboard() {
     distribution[1].value +
     distribution[2].value;
 
+  // Filter students
+  const filteredStudents =
+    selectedSquad === "All"
+      ? students
+      : students.filter(
+          (student) =>
+            student.squad === selectedSquad
+        );
+
+  // VIEW ALL FUNCTION
+  const handleViewAll = () => {
+    setSelectedSquad("All");
+    setFilterOpen(false);
+  };
+
   return (
     <section
       className="dashboard-page"
       id="dashboard"
     >
-      {/* PAGE HEADER */}
+      {/* =================================
+          PAGE HEADER
+      ================================== */}
 
       <div className="dashboard-heading">
         <div>
@@ -248,7 +268,9 @@ function Dashboard() {
         </button>
       </div>
 
-      {/* STATISTICS */}
+      {/* =================================
+          STATISTICS
+      ================================== */}
 
       <div className="stats-grid">
         {statCards.map((card) => (
@@ -259,7 +281,9 @@ function Dashboard() {
         ))}
       </div>
 
-      {/* ATTENDANCE DISTRIBUTION */}
+      {/* =================================
+          ATTENDANCE DISTRIBUTION
+      ================================== */}
 
       <article className="panel distribution-panel">
         <div className="distribution-header">
@@ -290,8 +314,6 @@ function Dashboard() {
         </div>
 
         <div className="distribution-main">
-          {/* DONUT */}
-
           <div className="donut-section">
             <div className="donut-chart">
               <ResponsiveContainer
@@ -324,9 +346,7 @@ function Dashboard() {
               </ResponsiveContainer>
 
               <div className="donut-center">
-                <span>
-                  Total Students
-                </span>
+                <span>Total Students</span>
 
                 <strong>
                   {totalStudents}
@@ -339,8 +359,6 @@ function Dashboard() {
             </div>
           </div>
 
-          {/* DISTRIBUTION DETAILS */}
-
           <div className="distribution-details">
             <div className="distribution-summary">
               <div>
@@ -348,9 +366,7 @@ function Dashboard() {
                   Overall healthy
                 </span>
 
-                <strong>
-                  65.4%
-                </strong>
+                <strong>65.4%</strong>
               </div>
 
               <div className="summary-status">
@@ -377,8 +393,6 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* BOTTOM SUMMARY */}
-
         <div className="distribution-footer">
           <div className="distribution-footer-item good">
             <div className="footer-icon">
@@ -390,9 +404,7 @@ function Dashboard() {
                 Healthy Students
               </span>
 
-              <strong>
-                102
-              </strong>
+              <strong>102</strong>
             </div>
           </div>
 
@@ -406,9 +418,7 @@ function Dashboard() {
                 Warning Students
               </span>
 
-              <strong>
-                32
-              </strong>
+              <strong>32</strong>
             </div>
           </div>
 
@@ -422,9 +432,7 @@ function Dashboard() {
                 Critical Students
               </span>
 
-              <strong>
-                22
-              </strong>
+              <strong>22</strong>
             </div>
           </div>
 
@@ -446,50 +454,136 @@ function Dashboard() {
         </div>
       </article>
 
-      {/* STUDENTS REQUIRING ATTENTION */}
+      {/* =================================
+          STUDENTS REQUIRING ATTENTION
+      ================================== */}
 
       <article className="panel attention-panel">
         <div className="attention-header">
-          <div>
+
+          {/* TITLE */}
+          <div className="attention-title">
             <h2>
               Students Requiring
               Attention
             </h2>
 
             <p>
-              Students currently below
-              the healthy attendance
-              threshold
+              Students currently below the
+              healthy attendance threshold
             </p>
           </div>
 
-          <button
-            type="button"
-            className="view-all-button"
-          >
-            View All
-          </button>
+          {/* FILTER + VIEW ALL */}
+          <div className="attention-actions">
+
+            {/* FILTER */}
+            <div className="filter-wrap">
+              <button
+                type="button"
+                className="outline-button"
+                onClick={() =>
+                  setFilterOpen(
+                    (value) => !value
+                  )
+                }
+              >
+                <Filter
+                  size={16}
+                  strokeWidth={2.2}
+                />
+
+                <span>Filter</span>
+
+                <ChevronDown size={14} />
+              </button>
+
+              {/* FILTER OPTIONS */}
+              {filterOpen && (
+                <div className="filter-menu">
+
+                  <button
+                    type="button"
+                    className={
+                      selectedSquad ===
+                      "Squad 138"
+                        ? "selected"
+                        : ""
+                    }
+                    onClick={() => {
+                      setSelectedSquad(
+                        "Squad 138"
+                      );
+
+                      setFilterOpen(false);
+                    }}
+                  >
+                    Squad 138
+                  </button>
+
+                  <button
+                    type="button"
+                    className={
+                      selectedSquad ===
+                      "Squad 139"
+                        ? "selected"
+                        : ""
+                    }
+                    onClick={() => {
+                      setSelectedSquad(
+                        "Squad 139"
+                      );
+
+                      setFilterOpen(false);
+                    }}
+                  >
+                    Squad 139
+                  </button>
+
+                </div>
+              )}
+            </div>
+
+            {/* VIEW ALL */}
+            <button
+              type="button"
+              className="outline-button"
+              onClick={handleViewAll}
+            >
+              View All
+            </button>
+          </div>
         </div>
+
+        {/* =================================
+            STUDENT TABLE
+        ================================== */}
 
         <div className="student-table-wrap">
           <table className="student-table">
             <thead>
               <tr>
                 <th>Student</th>
+
                 <th>Squad</th>
+
                 <th>
                   Overall Attendance
                 </th>
+
                 <th>Status</th>
+
                 <th>Last Updated</th>
+
                 <th aria-label="Action" />
               </tr>
             </thead>
 
             <tbody>
-              {students.map(
+              {filteredStudents.map(
                 (student) => (
                   <tr key={student.name}>
+
                     <td>
                       <div className="student-name">
                         <div className="student-avatar">
@@ -563,23 +657,38 @@ function Dashboard() {
               )}
             </tbody>
           </table>
+
+          {filteredStudents.length === 0 && (
+            <div className="empty-state">
+              No students found for this
+              squad.
+            </div>
+          )}
         </div>
+
+        {/* FOOTER */}
 
         <div className="attention-footer">
           <span>
             <MoreHorizontal size={16} />
 
-            Showing 5 of 24 at-risk
-            students
+            Showing{" "}
+            {filteredStudents.length}{" "}
+            of 24 at-risk students
           </span>
 
-          <button type="button">
+          <button
+            type="button"
+            onClick={handleViewAll}
+          >
             Open Students
           </button>
         </div>
       </article>
 
-      {/* FOOTER */}
+      {/* =================================
+          FOOTER
+      ================================== */}
 
       <footer className="dashboard-footer">
         © 2024 AESA — Attendance &amp;
