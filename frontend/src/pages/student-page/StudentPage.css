@@ -777,23 +777,34 @@
   .filter-container {
     flex-direction: column;
     align-items: stretch;
-    gap: 10px;
+    gap: 12px;
   }
 
-  .search-box {
+  .student-page .filter-container .search-box {
     width: 100%;
     min-width: 0;
     max-width: 100%;
-    flex-basis: auto;
+    flex: 0 0 42px;
+    height: 42px;
+  }
+
+  .student-page .filter-container .search-box input {
+    width: 100%;
+    height: 42px;
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: 42px;
   }
 
   .filter-container select {
     width: 100%;
     min-width: 0;
+    height: 42px;
   }
 
   .clear-filter-btn {
     width: 100%;
+    height: 42px;
   }
 
   .pagination {
