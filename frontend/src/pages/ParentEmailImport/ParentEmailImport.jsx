@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Download,
+  Search,
   Save,
   Upload,
 } from "lucide-react";
@@ -94,6 +95,9 @@ const isValidEmail = (value) =>
     useState("");
     
     const [squad, setSquad] = 
+    useState("");
+
+    const [search, setSearch] =
     useState("");
 
   // =====================================================
@@ -650,6 +654,21 @@ const isValidEmail = (value) =>
     }
   };
 
+  const searchValue = search.trim().toLowerCase();
+  const filteredStudents = students.filter((student) =>
+    [
+      student.name,
+      student.email,
+      student.phone,
+      student.parentEmail,
+      student.parentPhone,
+    ].some((value) =>
+      String(value || "")
+        .toLowerCase()
+        .includes(searchValue)
+    )
+  );
+
 
 
   // =====================================================
@@ -785,10 +804,21 @@ const isValidEmail = (value) =>
             <p>
               {loading
                 ? "Loading students..."
-                : `${students.length} students in your assigned squad`}
+                : `${filteredStudents.length} of ${students.length} students shown`}
             </p>
 
           </div>
+
+          <label className="parent-email-search">
+            <Search size={17} aria-hidden="true" />
+            <input
+              type="search"
+              aria-label="Search student contacts"
+              value={search}
+              placeholder="Search student contacts"
+              onChange={(event) => setSearch(event.target.value)}
+            />
+          </label>
 
 
           {/* SAVE */}
@@ -870,7 +900,7 @@ const isValidEmail = (value) =>
 
               <tbody>
 
-                {students.map(
+                {filteredStudents.map(
                   (student) => {
 
                     const rowError =
@@ -1007,6 +1037,14 @@ const isValidEmail = (value) =>
                       </tr>
                     );
                   }
+                )}
+
+                {filteredStudents.length === 0 && (
+                  <tr>
+                    <td className="parent-email-no-results" colSpan="5">
+                      No student contacts match your search.
+                    </td>
+                  </tr>
                 )}
 
               </tbody>
